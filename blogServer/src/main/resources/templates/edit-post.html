@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Post</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container22 {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333333;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin: 5px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tag .close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="container22">
+    <h2>Edit Post</h2>
+    <form th:action="@{/post/update/{id}(id=${post.id})}" method="post" th:object="${post}">
+        <label for="title">Title</label>
+        <input type="text" id="title" th:field="*{title}" placeholder="Enter post title" required>
+
+        <label for="content">Content</label>
+        <textarea id="content" th:field="*{content}" placeholder="Write your content here..." required></textarea>
+
+        <label for="postedBy">Posted By</label>
+        <input type="text" id="postedBy" th:field="*{postedBy}" placeholder="Your name" required>
+
+        <label for="img">Image URL</label>
+        <input type="text" id="img" th:field="*{img}" placeholder="https://example.com/image.jpg" required>
+
+        <label for="tagInput">Tags (press Enter to add)</label>
+        <input type="text" id="tagInput" placeholder="Type tag and press Enter">
+
+        <input type="hidden" id="tags" name="tags" th:field="*{tags}">
+
+        <div class="tags-container">
+            <span th:each="tag : ${post.tags.split(',')}" class="tag">
+                <span th:text="${tag}"></span>
+                <button type="button" class="close" th:data-tag="${tag}" onclick="removeTag(this)">X</button>
+            </span>
+        </div>
+
+        <button type="submit">Edit Post</button>
+    </form>
+</div>
+
+<script>
+    let tagArray = []; // خليها global من هنا فوق
+
+    function updateHiddenField() {
+        const tagHiddenInput = document.getElementById("tags");
+        tagHiddenInput.value = tagArray.join(',');
+    }
+
+    function removeTag(button) {
+        const tagElement = button.parentElement;
+        const tagValue = button.getAttribute('data-tag');
+        tagArray.splice(tagArray.indexOf(tagValue), 1);
+        tagElement.remove();
+        updateHiddenField();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const tagInput = document.getElementById("tagInput");
+        const tagContainer = document.querySelector(".tags-container");
+
+        // ضيف التاجز الموجودة للمصفوفة
+        document.querySelectorAll('.tags-container .tag').forEach(tagElement => {
+            const tagValue = tagElement.innerText.trim().replace('X', '').trim();
+            if (!tagArray.includes(tagValue)) {
+                tagArray.push(tagValue);
+            }
+        });
+        updateHiddenField();
+
+        function addTag(tagValue) {
+            if (tagValue && !tagArray.includes(tagValue)) {
+                tagArray.push(tagValue);
+
+                const tagElement = document.createElement('span');
+                tagElement.classList.add('tag');
+
+                const textSpan = document.createElement('span');
+                textSpan.textContent = tagValue;
+
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = 'X';
+                closeBtn.classList.add('close');
+                closeBtn.setAttribute('data-tag', tagValue);
+                closeBtn.onclick = function () {
+                    removeTag(closeBtn);
+                };
+
+                tagElement.appendChild(textSpan);
+                tagElement.appendChild(closeBtn);
+                tagContainer.appendChild(tagElement);
+
+                updateHiddenField();
+            }
+        }
+
+        tagInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' && tagInput.value.trim() !== '') {
+                event.preventDefault();
+                addTag(tagInput.value.trim());
+                tagInput.value = '';
+            }
+        });
+
+        document.querySelector('form').addEventListener('submit', function (event) {
+            if (tagArray.length === 0) {
+                alert("Please add at least one tag.");
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+</body>
+</html>

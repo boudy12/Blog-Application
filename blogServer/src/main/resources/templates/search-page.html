@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <title>Search Posts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            color: #333;
+			
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .post-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .post-card h2 {
+            margin-top: 0;
+            color: #007bff;
+        }
+
+        .read-more {
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+    <h1 style="	padding: 40px;"]>Search Posts</h1>
+
+    <form th:action="@{/search}" method="post">
+        <input type="text" name="query" placeholder="Search by title..." required />
+        <button type="submit">Search</button>
+    </form>
+
+    <div th:if="${posts != null}">
+        <h2 th:if="${posts.isEmpty()}">No results found.</h2>
+        <div th:each="post : ${posts}" class="post-card">
+            <h2 th:text="${post.title}">Post Title</h2>
+			<p th:if="${post.content != null and post.content.length() > 150}" th:text="${post.content.substring(0, 150) + '...'}">Post Content</p>
+			<p th:if="${post.content != null and post.content.length() <= 150}" th:text="${post.content}">Post Content</p>
+            <a th:href="@{'/post/' + ${post.id}}" class="read-more">Read More</a>
+        </div>
+    </div>
+
+</body>
+</html>

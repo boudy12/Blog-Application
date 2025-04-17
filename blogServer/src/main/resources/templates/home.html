@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .post-card {
+			    background-color: white;
+			    border-radius: 10px;
+			    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			    margin-bottom: 30px;
+			    padding: 20px;
+			    width: calc(45% - 10px);
+			    display: flex;
+			    flex-direction: column; /* توزيع العناصر عموديًا */
+			    transition: transform 0.3s ease, box-shadow 0.3s ease;
+			    height: 100%;
+			}
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .post-user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-username {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+
+		.post-time {
+		    font-size: 14px; /* حجم الخط الأصغر */
+		    color: #888; /* لون رمادي فاتح */
+		    text-align: right; /* محاذاة الوقت لليمين */
+		    margin-top: 10px; /* مسافة بين الوقت وبقية المحتوى */
+		    font-style: italic; /* إضافة تنسيق مائل */
+		    display: block; /* عرض الوقت في سطر منفصل */
+		}
+        .post-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 15px;
+            color: #333;
+        }
+
+		.post-content {
+		    font-size: 16px;
+		    color: #555;
+		    margin-top: 10px;
+		    flex-grow: 1; /* يجعل المحتوى يشغل كل المساحة المتاحة */
+		}
+
+        .tags-container {
+            margin-top: 20px;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            margin-right: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .post-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+		.post-actions {
+		    display: flex;
+		    justify-content: space-between;
+		    margin-top: 20px;
+		    margin-bottom: 10px;
+		}
+
+		.post-actions button {
+		    background-color: transparent;
+		    border: none;
+		    color: #007bff;
+		    font-size: 16px;
+		    cursor: pointer;
+		    transition: color 0.3s ease;
+		}
+
+		.post-actions button:hover {
+		    color: #0056b3;
+		}
+
+        @media screen and (max-width: 768px) {
+            .post-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header"></div>
+
+
+<div class="container">
+<div th:each="post : ${posts}" class="post-card" >
+    <div 
+         th:onclick="'window.location.href=\'/post/' + ${post.id} + '\';'" 
+         style="cursor: pointer;">
+         
+        <div class="post-header">
+            <img th:src="@{${post.img}}" class="profile-image" alt="User Image" />
+            <div class="post-user-info">
+                <span class="post-username" th:text="${post.postedBy}">Username</span>
+                <span class="post-time" th:text="${post.createdAtString}">Time</span>
+            </div>
+        </div>
+
+        <h2 class="post-title" th:text="${post.title}">Post Title</h2>
+        <p class="post-content" th:text="${post.content}">Post Content</p>
+
+        <div class="tags-container">
+            <span th:each="tag : ${post.tags.split(',')}" class="tag" th:text="${tag}"></span>
+        </div>
+
+        <img th:src="@{${post.img}}" class="post-image" alt="Post Image" />
+
+
+    </div>
+</div>
+
+</div>
+
+</body>
+</html>

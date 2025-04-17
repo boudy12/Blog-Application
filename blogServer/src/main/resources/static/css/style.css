@@ -1,0 +1,56 @@
+/* Reset */
+
+
+/* Header Styling */
+.header {
+    background-color: #ffffff;
+    color: #333333;
+    padding: 20px 50px;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    top: 0;
+    z-index: 1000;
+}
+
+/* Header Layout */
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Title */
+.header h1 {
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Navigation Links */
+.header nav a {
+    color: #007bff;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-left: 20px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.header nav a:hover {
+    color: #0056b3;
+    transform: scale(1.1);
+}
+
+.header nav a:active {
+    color: #003366;
+}
+
+/* Container for other pages */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
